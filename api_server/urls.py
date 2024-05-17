@@ -23,8 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('books/occupied', views.get_occupied_book, name="Occupied"),
     path('books/free', views.get_free_book, name="Free"),
-    path('books/active', views.get_active_book, name="Active"),
+    path('books/last', views.get_last_book, name="Last"),
+    path('books/confirmed', views.get_confirmed_book, name="Confirmed"),
     path('users/authenticate', views.authenticate, name="authenticate"),
     path('users/register_user', views.register_user, name="register_user"),
-    path('users', views.get_users, name="Users")
+    path('users', views.get_users, name="Users"),
+    path('books/all', views.get_all_books, name="All"),
 ]

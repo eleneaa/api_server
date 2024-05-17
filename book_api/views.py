@@ -18,10 +18,27 @@ def get_free_book(request):
     response = dict()
 
     if request.method == 'GET':
-        db_book = Book.objects.filter(occupied=False)
+        db_book = Book.objects.filter(occupied=False, last=False, confirmed=False)
         response = des_json.loads(serializers.serialize('json', db_book))
 
     return JsonResponse(response, safe=False)
+
+
+def get_confirmed_book(request):
+    response = dict()
+    if request.method == 'POST':
+        request_data = des_json.loads(request.body)
+        username = request_data.get('username')
+        id = request_data.get('book_id')
+        description = request_data.get('description')
+        number = request_data.get('number')
+        book = Book.objects.filter(pk=id).update(user=username, description=description, number=number, occupied=True)
+    if request.method == 'GET':
+        db_book = Book.objects.filter(occupied=True, confirmed=True, last=False)
+        response = des_json.loads(serializers.serialize('json', db_book))
+
+    return JsonResponse(response, safe=False)
+
 
 @csrf_exempt
 def get_occupied_book(request):
@@ -34,18 +51,37 @@ def get_occupied_book(request):
         number = request_data.get('number')
         book = Book.objects.filter(pk=id).update(user=username, description=description, number=number, occupied=True)
     if request.method == 'GET':
-        db_book = Book.objects.filter(occupied=True)
+        db_book = Book.objects.filter(occupied=True, confirmed=False, last=False)
         response = des_json.loads(serializers.serialize('json', db_book))
 
     return JsonResponse(response, safe=False)
 
 
-def get_active_book(request):
+def get_last_book(request):
     response = dict()
-
+    if request.method == 'POST':
+        request_data = des_json.loads(request.body)
+        username = request_data.get('username')
+        id = request_data.get('book_id')
+        description = request_data.get('description')
+        number = request_data.get('number')
+        book = Book.objects.filter(pk=id).update(user=username, description=description, number=number, occupied=True)
     if request.method == 'GET':
-        db_book = Book.objects.filter(active=True)
+        db_book = Book.objects.filter(last=True, occupied=True, confirmed=True)
         response = des_json.loads(serializers.serialize('json', db_book))
+
+    return JsonResponse(response, safe=False)
+
+@csrf_exempt
+def get_all_books(request):
+    response = dict()
+    if request.method == 'GET':
+        db_book = Book.objects.all()
+        response = des_json.loads(serializers.serialize('json', db_book))
+    if request.method == 'POST':
+        request_data = des_json.loads(request.body)
+        id = request_data.get('id')
+        book = Book.objects.filter(pk=id).update(occupied=False, confirmed=False)
 
     return JsonResponse(response, safe=False)
 
@@ -91,5 +127,3 @@ def get_users(request):
         db_book = User.objects.all()
         response = des_json.loads(serializers.serialize('json', db_book))
         return JsonResponse(response, safe=False)
-
-
