@@ -15,11 +15,6 @@
 1. Склонируйте репозиторий:
    ```
    git clone https://github.com/eleneaa/book_photoshoot
-  
-2. Перейдите в папку проекта:
-  ```
-cd book_photoshoot
-```
 
 3. Установите зависимости:
   ```
